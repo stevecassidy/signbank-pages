@@ -1,6 +1,6 @@
 from .models import Page
 from django.template import loader, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.contrib.auth.views import redirect_to_login
@@ -37,8 +37,7 @@ def page(request, url='/'):
             f = Page(title='No Pages', 
                      content='<p>No pages defined. Login to <a href="/admin">admin</a> to create some.</p>')  
         else:
-            t = loader.get_template("404.html")
-            return HttpResponseNotFound(t.render(RequestContext(request)))
+            raise Http404("Page does not exist")
     
     # If registration is required for accessing this page check the group
     if f.group_required:
