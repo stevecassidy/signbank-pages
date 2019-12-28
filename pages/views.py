@@ -41,7 +41,7 @@ def page(request, url='/'):
     
     # If registration is required for accessing this page check the group
     if f.group_required:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             if not request.user.groups.filter(name=f.group_required.name).count():
                 f = Page(title='Permission denied', 
                          content='<p>You do not have permission to access this page. This page is only available to users with the permission level of ' + f.group_required.name.lower() + '. If you believe you should have access to this page please send us <a href="/feedback/generalfeedback.html">feedback</a>.</p>')
