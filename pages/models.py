@@ -4,14 +4,11 @@ Database models for pages.
 """
 
 from __future__ import absolute_import, unicode_literals
-from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
 
 
-
-@python_2_unicode_compatible
 class Page(models.Model):
     """
     A page of content for the site.
