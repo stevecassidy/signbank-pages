@@ -46,9 +46,6 @@ setup(
         'pages',
     ],
     include_package_data=True,
-    install_requires=[
-        "Django>=1.8",
-    ],
     license="AGPL 3.0",
     zip_safe=False,
     keywords='Django signbank',
