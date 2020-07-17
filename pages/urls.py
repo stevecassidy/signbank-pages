@@ -2,12 +2,21 @@
 """
 URLs for pages.
 """
-from __future__ import absolute_import, unicode_literals
-
 from django.urls import path
-from .views import page
+from .views import AttachmentView
+
+app_name = 'pages'
 
 urlpatterns = [
-    path('<url>', page),
+    path('attachments', AttachmentView.as_view())
 ]
 
+
+# urlpatterns = patterns('',
+
+#     (r'^$', 'django.views.generic.list_detail.object_list',
+#        {'queryset': Attachment.objects.all(),
+#         'template_name': 'list.html',
+#        }, "attachments"),
+#     (r'^upload/', 'signbank.attachments.views.upload_file'),
+# )

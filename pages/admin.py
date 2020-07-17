@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from .models import Page
+from .models import Page, Attachment
 from django.utils.translation import ugettext_lazy as _
 from django_summernote.admin import SummernoteModelAdmin
 
@@ -29,3 +29,7 @@ class PageAdmin(SummernoteModelAdmin):
 admin.site.register(Page, PageAdmin)
 
 
+class AttachmentAdmin(admin.ModelAdmin):
+   list_display = ['file', 'date', 'uploader']
+
+admin.site.register(Attachment, AttachmentAdmin)

@@ -7,6 +7,7 @@ from __future__ import absolute_import, unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
+from django.contrib.auth import models as authmodels
 
 
 class Page(models.Model):
@@ -40,3 +41,16 @@ class Page(models.Model):
         Get a string representation of this model instance.
         """
         return "%s -- %s" % (self.url, self.title)
+
+
+
+# Model for file attachments uploaded to the site
+# basically just a simple container for files
+# but allowing for replacement of previously uploaded files
+
+class Attachment(models.Model):
+
+    file = models.FileField(upload_to='upload/attachments')
+    description = models.TextField(blank=True)
+    date = models.DateField(auto_now=True)
+    uploader = models.ForeignKey(authmodels.User, on_delete=models.CASCADE)

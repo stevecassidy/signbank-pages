@@ -1,9 +1,15 @@
-from .models import Page
 from django.template import loader, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.contrib.auth.views import redirect_to_login
+from django import forms
+from django.views.generic.edit import FormView
+from django.views.generic import ListView
+
+import os
+
+from .models import Page, Attachment
 
 DEFAULT_TEMPLATE = 'pages/default.html'
 
@@ -64,3 +70,43 @@ def page(request, url='/'):
     return response
 
 
+class UploadFileForm(forms.Form):
+    file  = forms.FileField()
+    description = forms.CharField()
+
+
+class AttachmentView(ListView):
+
+    template_name = "pages/attachments.html"
+    model = Attachment
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = UploadFileForm
+        return context
+    
+    def handle_file(self, request, fileobj):
+        """Store the uploaded file"""
+
+        fullpath = os.path.join(settings.UPLOAD_ROOT, "attachments", fileobj.name)
+        relname =  os.path.join(settings.UPLOAD_URL, "attachments", fileobj.name)
+        if not os.path.exists(os.path.dirname(fullpath)):
+            os.makedirs(os.path.dirname(fullpath))
+
+        with open(fullpath, 'wb+') as destination:
+            for chunk in fileobj.chunks():
+                destination.write(chunk)
+
+        # create and save a new attachment object
+        a = Attachment(file=relname, description=request.POST['description'], uploader=request.user)
+        a.save()
+
+        return relname
+
+    def post(self, request):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            destname = self.handle_file(request, request.FILES['file'])
+        else:
+            print("invalid form", form)
+        return HttpResponseRedirect('/pages/attachments')
